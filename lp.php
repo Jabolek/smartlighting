@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Positions.php';
+require_once 'LPC.php';
 
 error_reporting(E_ALL);
 
@@ -8,14 +8,14 @@ $roadCoords = false;
 $roadRadius = false;
 $bulbRadius = false;
 $enableScaling = 1;
-$jsonOutput = 1;
+$outputType = 1;
 
 $requiredParams = array(
     'roadCoords' => 'road_coords',
     'roadRadius' => 'road_radius',
     'bulbRadius' => 'bulb_radius',
     'enableScaling' => 'enable_scaling',
-    'jsonOutput' => 'json_output',
+    'outputType' => 'output_type',
 );
 
 $i = 1;
@@ -41,13 +41,13 @@ foreach ($requiredParams as $var => $name) {
 }
 
 $enableScaling = (int) $enableScaling;
-$jsonOutput = (int) $jsonOutput;
+$outputType = (int) $outputType;
 
 $Calc = new LanternPositionsCalculator($enableScaling);
 
 $positions = $Calc->calculateLanternPositions($roadCoords, $roadRadius, $bulbRadius);
 
-if ($jsonOutput) {
+if ($outputType == 1) {
     LanternPositionsCalculator::displayJsonResponse($positions);
 } else {
     LanternPositionsCalculator::displayTsvResponse($positions);

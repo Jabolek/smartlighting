@@ -206,7 +206,7 @@ class LanternPositionsCalculator {
 
         header('Content-type: text/csv');
         foreach ($points as $p) {
-            self::displayLine(str_replace('.', ',', $p->x) . "\t" . str_replace('.', ',', $p->y));
+            echo $p->x . "\t" . $p->y . "\n";
         }
     }
 
