@@ -9,7 +9,7 @@ Script honors GET, POST and CLI variables
     VALUES: 1: convert DEFAULT
             0: do not convert
 5 - optput_type type of data returned
-    VALUES: 1: JSON
+    VALUES: 1: JSON DEFAULT
             2: TSV
 --------------------------------
 EXAMPLE WWW USAGE: 
