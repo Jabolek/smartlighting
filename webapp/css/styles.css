@@ -6,14 +6,32 @@ body {
 .content .title {
     margin-bottom: 1em;
 }
+/*.jumbotron {
+    position: relative;
+}*/
 /* End General */
 /* Nav */
 .navbar-header {
     text-transform: capitalize;
 }
+.#nav li.hidden {
+    display: none;
+}
 /* End Nav */
+/* Page */
+.page {
+    display: none;
+/*    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 48px 60px;*/
+}
+.page.active {
+/*     display: block; */
+}
+/* End Page */
 /* Map */
-.map {
+.page.map {
     width: 100%;
     max-width: 800px;
     margin: 1em auto;

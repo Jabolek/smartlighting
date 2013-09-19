@@ -21,11 +21,11 @@
           <a class="navbar-brand" href="#">System inteligentnego oświetlenia miejskiego</a>
         </div>
         <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
+          <ul id="nav" class="nav navbar-nav">
+            <li class="home active"><a href="#home">Home</a></li>
+            <li class="map hidden"><a href="#map">Mapa</a></li>
+            <li class="summary hidden"><a href="#summary">Podsumowanie</a></li>
+            <!--<li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Action</a></li>
@@ -36,7 +36,7 @@
                 <li><a href="#">Separated link</a></li>
                 <li><a href="#">One more separated link</a></li>
               </ul>
-            </li>
+            </li>-->
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -44,8 +44,13 @@
     <div class="container content">
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
-        <h1 class="title">Mapa ulicy</h1>
-        <div id="map" class="map">
+        <div id="home" class="page active">
+            <h2>Nowe zapytanie:</h2>
+            
+        </div>
+        <div id="map" class="map page"> </div>
+        <div id="summary" class="page">
+            <h2>Podsumowanie</h2>
         </div>
       </div>
     </div> <!-- /container -->
