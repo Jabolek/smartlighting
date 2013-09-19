@@ -317,7 +317,7 @@ class Circle {
 
     public function toString() {
 
-        return "x={$this->center->x} y={$this->center->y} radius={$this->radius}";
+        return "(x-{$this->center->x})^2 + (y-{$this->center->y})^2 ={$this->radius}^2";
     }
 
 }
