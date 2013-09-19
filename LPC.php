@@ -12,9 +12,10 @@ class LanternPositionsCalculator {
     private $bulbDiameter;
     private $lanternsOnBothSides;
     private $scalingEnabled;
+    private $startPoint;
 
     function __construct($scalingEnabled = true) {
-        
+
         $this->scalingEnabled = $scalingEnabled;
     }
 
@@ -76,23 +77,76 @@ class LanternPositionsCalculator {
         } catch (Exception $e) {
             LanternPositionsCalculator::displayErrorMessage($e->getMessage());
         }
+        
+        $this->scaleLanternCoords();
 
         return $this->lanterns;
     }
 
     private function metersToDegrees($val) {
 
-        if ($this->scalingEnabled)
-            return $val / 110000;
+        return $val / 110000;
+    }
 
-        return $val;
+    private function degreesToMeters($val) {
+
+        return $val * 110000;
+    }
+
+    private function scaleRoadCoords() {
+
+        if ($this->scalingEnabled) {
+
+            $startCoords = $this->roadCoords[0];
+
+            $startX = $startCoords->x;
+            $startY = $startCoords->y;
+
+
+            foreach ($this->roadCoords as &$point) {
+
+                $x = $point->x;
+                $y = $point->y;
+
+                $xDiff = $startX - $x;
+                $yDiff = $startY - $y;
+
+                $point->x = $this->degreesToMeters($xDiff);
+                $point->y = $this->degreesToMeters($yDiff);
+            }
+        }
+    }
+
+    private function scaleLanternCoords() {
+        
+        if ($this->scalingEnabled) {
+
+            $startCoords = $this->roadCoords[0];
+
+            $startX = $startCoords->x;
+            $startY = $startCoords->y;
+
+
+            foreach ($this->lanterns as &$point) {
+
+                $x = $point->x;
+                $y = $point->y;
+
+                $xDiff = $x - $startX;
+                $yDiff = $y - $startY;
+
+                $point->x = $this->startPoint->x - $this->metersToDegrees($xDiff);
+                $point->y = $this->startPoint->y - $this->metersToDegrees($yDiff);
+            }
+        }
+        
     }
 
     private function initParams(&$roadCoords, &$roadRadius, &$bulbRadius) {
 
         $this->lanterns = array();
 
-        $this->roadRadius = $this->metersToDegrees((float) $roadRadius);
+        $this->roadRadius = (float) $roadRadius;
 
         $this->roadDiameter = 2 * $this->roadRadius;
 
@@ -100,7 +154,7 @@ class LanternPositionsCalculator {
             throw new Exception('Road radius should be greater than 0!');
         }
 
-        $this->bulbRadius = $this->metersToDegrees((float) $bulbRadius);
+        $this->bulbRadius = (float) $bulbRadius;
 
         $this->bulbDiameter = 2 * $this->bulbRadius;
 
@@ -141,10 +195,16 @@ class LanternPositionsCalculator {
 
             $this->roadCoords[] = new Point($lat, $lon);
 
+            if ($totalRoadCoords == 0) {
+                $this->startPoint = new Point($lat, $lon);
+            }
+
             $totalRoadCoords++;
         }
 
         $this->totalRoadCoords = $totalRoadCoords;
+
+        $this->scaleRoadCoords();
     }
 
     private function isRoadSectionLighted(Point $roadPoint) {
