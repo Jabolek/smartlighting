@@ -19,11 +19,11 @@ class LanternPositionsCalculator {
         $this->scalingEnabled = $scalingEnabled;
     }
 
-    function calculateLanternPositions($roadCoords, $roadRadius, $bulbRadius) {
+    function calculateLanternPositions($roadCoords, $roadDiameter, $bulbRadius) {
 
         try {
 
-            $this->initParams($roadCoords, $roadRadius, $bulbRadius);
+            $this->initParams($roadCoords, $roadDiameter, $bulbRadius);
 
             foreach ($this->roadCoords as $i => $currRoadPoint) {
 
@@ -142,13 +142,13 @@ class LanternPositionsCalculator {
         
     }
 
-    private function initParams(&$roadCoords, &$roadRadius, &$bulbRadius) {
+    private function initParams(&$roadCoords, &$roadDiameter, &$bulbRadius) {
 
         $this->lanterns = array();
 
-        $this->roadRadius = (float) $roadRadius;
-
-        $this->roadDiameter = 2 * $this->roadRadius;
+        $this->roadDiameter = (float) $roadDiameter;
+        
+        $this->roadRadius = $roadDiameter / 2;
 
         if (!$this->roadRadius) {
             throw new Exception('Road radius should be greater than 0!');
