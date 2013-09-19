@@ -25,9 +25,18 @@ class LanternPositionsCalculator {
 
             $this->initParams($roadCoords, $roadDiameter, $bulbRadius);
 
+            $lastSectonLanternPlaced = false;
+
+            $skipLinesCheck = false;
+
             foreach ($this->roadCoords as $i => $currRoadPoint) {
 
                 $nextPointIndex = $i + 1;
+
+                if ($nextPointIndex == 6) {
+                    $lol = 1;
+                    $lol++;
+                }
 
                 $nextRoadPoint = $this->roadCoords[$nextPointIndex];
 
@@ -43,30 +52,43 @@ class LanternPositionsCalculator {
 
                 while (!$this->isRoadSectionLighted($nextRoadPoint)) {
 
-                    if (!isset($helperPoint)) {
+                    try {
 
-                        $helperPoint = $leftCurbLine->getLinesIntersectionPoint($currPointCenterLineNormal);
+                        if (!isset($helperPoint)) {
 
-                        $helperCircle = new Circle($helperPoint, $this->bulbRadius);
-                    } else {
+                            $helperPoint = $leftCurbLine->getLinesIntersectionPoint($currPointCenterLineNormal);
 
-                        $lanternCircle = new Circle($this->lastLantern, $this->bulbRadius);
+                            $helperCircle = new Circle($helperPoint, $this->bulbRadius);
+                        } else {
 
-                        $intersectingPoints = $lanternCircle->getIntersectionPointsWithLine($leftCurbLine);
+                            $lanternCircle = new Circle($this->lastLantern, $this->bulbRadius);
 
-                        $helperPoint = $this->getClosestPoint($nextRoadPoint, $intersectingPoints);
+                            $intersectingPoints = $lanternCircle->getIntersectionPointsWithLine($leftCurbLine);
 
-                        $helperCircle = new Circle($helperPoint, $this->bulbRadius);
+                            $helperPoint = $this->getClosestPoint($nextRoadPoint, $intersectingPoints);
+
+                            $helperCircle = new Circle($helperPoint, $this->bulbRadius);
+                        }
+
+                        $possibleLanternPositions = $helperCircle->getIntersectionPointsWithLine($rightCurbLine);
+
+                        $lantern = $this->getClosestPoint($nextRoadPoint, $possibleLanternPositions);
+                    } catch (Exception $e) {
+
+                        if (strpos($e->getMessage(), 'No intersection points') !== false && $lastSectonLanternPlaced == false) {
+                            $skipLinesCheck = true;
+                        } else {
+                            throw $e;
+                        }
                     }
 
-                    $possibleLanternPositions = $helperCircle->getIntersectionPointsWithLine($rightCurbLine);
-
-                    $lantern = $this->getClosestPoint($nextRoadPoint, $possibleLanternPositions);
-
-                    if ($lantern->isBetweenLines($currPointCenterLineNormal, $nextPointCenterLineNormal)) {
+                    if ($skipLinesCheck || $lantern->isBetweenLines($currPointCenterLineNormal, $nextPointCenterLineNormal)) {
                         $this->lanterns[] = $lantern;
                         $this->lastLantern = $lantern;
+                        $lastSectonLanternPlaced = true;
+                        $skipLinesCheck = false;
                     } else {
+                        $lastSectonLanternPlaced = false;
                         break;
                     }
                 }
@@ -77,7 +99,7 @@ class LanternPositionsCalculator {
         } catch (Exception $e) {
             LanternPositionsCalculator::displayErrorMessage($e->getMessage());
         }
-        
+
         $this->scaleLanternCoords();
 
         return $this->lanterns;
@@ -118,7 +140,7 @@ class LanternPositionsCalculator {
     }
 
     private function scaleLanternCoords() {
-        
+
         if ($this->scalingEnabled) {
 
             $startCoords = $this->roadCoords[0];
@@ -139,7 +161,6 @@ class LanternPositionsCalculator {
                 $point->y = $this->startPoint->y - $this->metersToDegrees($yDiff);
             }
         }
-        
     }
 
     private function initParams(&$roadCoords, &$roadDiameter, &$bulbRadius) {
@@ -147,7 +168,7 @@ class LanternPositionsCalculator {
         $this->lanterns = array();
 
         $this->roadDiameter = (float) $roadDiameter;
-        
+
         $this->roadRadius = $roadDiameter / 2;
 
         if (!$this->roadRadius) {
