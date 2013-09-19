@@ -30,6 +30,31 @@ body {
 /*     display: block; */
 }
 /* End Page */
+/* Page Home */
+.page#home {
+    overflow: hidden;
+}
+.page#home h2 {
+    padding-bottom: 0.5em;
+}
+.page#home h3 {
+    display: inline-block;
+    float: left;
+    clear: both;
+    width: 7.5em;
+    font-weight: bold;
+    color: #aaaaaa;
+}
+.page#home .row {
+    margin: 20px 0 10px 0;
+}
+.page#home button.dropdown-toggle {
+     width: 20em;
+}
+.page#home button.btn-lg {
+    margin-top: 1.5em;
+}
+/* End Page Home */
 /* Map */
 .page.map {
     width: 100%;
