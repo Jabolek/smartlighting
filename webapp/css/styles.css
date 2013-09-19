@@ -1,0 +1,24 @@
+/* General */
+body {
+    padding-top: 70px;
+}
+
+.content .title {
+    margin-bottom: 1em;
+}
+/* End General */
+/* Nav */
+.navbar-header {
+    text-transform: capitalize;
+}
+/* End Nav */
+/* Map */
+.map {
+    width: 100%;
+    max-width: 800px;
+    margin: 1em auto;
+    height: 500px;
+    border: 1px solid black;
+    background: gray;
+}
+/* End Map */
