@@ -35,6 +35,7 @@ body {
     overflow: hidden;
 }
 .page#home h2 {
+    margin-top: 0;
     padding-bottom: 0.5em;
 }
 .page#home h3 {
@@ -42,6 +43,7 @@ body {
     float: left;
     clear: both;
     width: 7.5em;
+    margin-top: 17px;
     font-weight: bold;
     color: #888888;
 }
@@ -53,6 +55,9 @@ body {
 }
 .page#home button.btn-lg {
     margin-top: 1.5em;
+}
+.page#home .btn-group {
+    vertical-align: bottom;
 }
 /* End Page Home */
 /* Map */
