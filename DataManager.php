@@ -8,7 +8,7 @@ class DataManager {
 
     public static function displayJsonResponse($data) {
 
-        header('Content-type: application/json');
+        header('Content-type: application/json; charset=utf8', true);
         
         echo json_encode($data);
     }
