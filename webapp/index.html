@@ -14,6 +14,7 @@
     <![endif]-->
   </head>
   <body>
+    <div id="shadow"></div>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -32,10 +33,9 @@
       <div class="jumbotron">
         <div id="home" class="page active">
             <h2>Nowe zapytanie:</h2>
-            <form action="">
             <div id="accordion_container" class="ui-widget-content">
                 <div id="accordion" class="accordion">
-                    <h3 title="Kliknij, aby rozwinąć/zwinąć">Drogi</h3>
+                    <h3 title="Kliknij, aby rozwinąć/zwinąć">1 Drogi</h3>
                     <div class="list">
                         <ul class="dropdown-menu" data-bind="foreach: roadsViewModel.roads">
                             <li>
@@ -84,7 +84,6 @@ $root.problemViewModel.bulbs">
                 </div>
             </div>
             <button type="button" class="btn btn-lg btn-primary" data-bind="click: calculate" >Przelicz</button>
-            </form>
         </div>
         <div id="map" class="map page"> </div>
         <div id="summary" class="page">
@@ -93,6 +92,15 @@ $root.problemViewModel.bulbs">
       </div>
     </div>
 
+    <div id="data_error" class="panel panel-danger message">
+        <div class="panel-heading">
+          <h3 class="panel-title">Błąd</h3>
+        </div>
+        <div class="panel-body">
+          Należy wybrać drogę, żarówki i latarnie!
+        </div>
+        <button type="button" class="btn btn-danger ok">OK</button>
+    </div>
     <!-- SCRIPT SECTION -->
     <script src="./js/jquery.js" type="text/javascript" ></script>
     <script src="./js/jquery.ui.core.min.js"></script>

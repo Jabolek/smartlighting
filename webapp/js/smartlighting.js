@@ -10,8 +10,14 @@ var UI = (function(){
     var $navMap;
     var $navSummary;
 
+    var $shadow;
+
     var $accordion;
     var $checkboxes;//In lists in accordion
+
+    var Messages = {};
+
+    var _fadeInTime = 500, _fadeOutTime = 500;
 
     function initVariables() {
         $navItems = $('#nav li');
@@ -19,8 +25,12 @@ var UI = (function(){
         $navMap = $('#nav li.map');
         $navSummary = $('#nav li.summary');
 
+        $shadow = $('#shadow');
+
         $accordion = $('#accordion');
         $checkboxes = $('#accordion li');
+
+        Messages.$dataError = $('#data_error');
     }
     // Menu
     function handleMenuClicks() {
@@ -75,16 +85,31 @@ var UI = (function(){
         });
     }
 
+    //Messages
+    function handleMessagesEvents() {
+        Messages.$dataError.find('.btn.ok').click(function(e) {
+            $shadow.fadeOut(_fadeOutTime);
+            Messages.$dataError.fadeOut(_fadeOutTime);
+        });
+    }
+
     return {
         Init : function() {
             initVariables();
             handleMenuClicks();
             initializeAccordion();
             handleCheckboxSelection();
+            handleMessagesEvents();
             navigateToPage('home');
         },
         RefreshAccordion : function() {
             $accordion.accordion('refresh');
+        },
+        Messages : {
+            ShowDataError : function() {
+                $shadow.fadeIn(_fadeInTime);
+                Messages.$dataError.fadeIn(_fadeInTime);
+            }
         }
     };
 })();
@@ -203,7 +228,12 @@ SmartLightingViewModel.problemViewModel.road(result.response[0].name);
 
         calculate : function() {
             var problemVM = SmartLightingViewModel.problemViewModel;
-            console.log(problemVM.bulbs(), problemVM.lanterns(), problemVM.road());
+            if (problemVM.bulbs().length <= 0 || problemVM.lanterns().length <= 0 || !problemVM.road()) {
+                UI.Messages.ShowDataError();
+            }
+            else {
+                console.log(problemVM.bulbs(), problemVM.lanterns(), problemVM.road());
+            }
         }
     };
 })();
