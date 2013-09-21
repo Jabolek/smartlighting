@@ -4,11 +4,8 @@ body {
 }
 
 .content .title {
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
 }
-/*.jumbotron {
-    position: relative;
-}*/
 /* End General */
 /* Nav */
 .navbar-header {
@@ -21,44 +18,70 @@ body {
 /* Page */
 .page {
     display: none;
-/*    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 48px 60px;*/
 }
 .page.active {
-/*     display: block; */
 }
 /* End Page */
 /* Page Home */
 .page#home {
-    overflow: hidden;
+/*     overflow: hidden; */
+}
+.page#home div {
+/*     overflow: hidden; */
+}
+.page#home div.list {
+    position: relative;
 }
 .page#home h2 {
     margin-top: 0;
     padding-bottom: 0.5em;
 }
 .page#home h3 {
-    display: inline-block;
-    float: left;
-    clear: both;
-    width: 7.5em;
-    margin-top: 17px;
+    margin: 0;
+    padding: 0.25em 0 0.25em 1em;
+    outline: 0;
     font-weight: bold;
     color: #888888;
 }
-.page#home .row {
-    margin: 20px 0 10px 0;
-}
-.page#home button.dropdown-toggle {
-     width: 20em;
-}
 .page#home button.btn-lg {
     margin-top: 1.5em;
+    padding: 6px 12px;
 }
 .page#home .btn-group {
     vertical-align: bottom;
 }
+/* Accordion */
+.ui-accordion-content {
+    padding: 0 0 0 2em;
+}
+.page#home #accordion_container {
+    width: 50%;
+    min-width: 500px;
+    height: 300px;
+}
+.page#home .accordion div {
+    overflow: auto !important;
+    overflow-x: hidden !important;
+}
+.page#home .accordion .dropdown-menu {
+    display: block;
+    position: static;
+}
+.page#home .accordion .dropdown-menu>li {
+    cursor: pointer;
+}
+.page#home .accordion .dropdown-menu>li>a.selected {
+    color: #fff;
+    text-decoration: none;
+    background-color: #428bca;
+}
+.page#home .accordion .dropdown-menu>li>a label {
+    margin: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+/* End Accordion */
 /* End Page Home */
 /* Map */
 .page.map {

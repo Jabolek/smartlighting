@@ -5,12 +5,13 @@ $(function() {
 });
 
 var UI = (function(){
-    var $navItems = null;
-    var $navHome = null;
-    var $navMap = null;
-    var $navSummary = null;
+    var $navItems;
+    var $navHome;
+    var $navMap;
+    var $navSummary;
 
-    var $multiselects;
+    var $accordion;
+    var $checkboxes;//In lists in accordion
 
     function initVariables() {
         $navItems = $('#nav li');
@@ -18,7 +19,8 @@ var UI = (function(){
         $navMap = $('#nav li.map');
         $navSummary = $('#nav li.summary');
 
-        $multiselects = $('.multiselect');
+        $accordion = $('#accordion');
+        $checkboxes = $('#accordion li');
     }
     // Menu
     function handleMenuClicks() {
@@ -50,12 +52,34 @@ var UI = (function(){
             });
         }
     }
-    
+    // End Menu
+    function initializeAccordion() {
+        $accordion.accordion({
+            heightStyle: "fill",
+            collapsible: true
+        });
+    }
+    function handleCheckboxSelection() {
+        $checkboxes.click(function(e) {
+            var $a = $(this).children('a');
+            var $input = $a.find('input');
+            if ($a) $a.toggleClass('selected');
+            if ($input) $input.prop('checked', !$input.prop('checked'));
+            console.log(this);
+            return false;
+        });
+    }
+
     return {
         Init : function() {
             initVariables();
             handleMenuClicks();
+            initializeAccordion();
+            handleCheckboxSelection();
             navigateToPage('home');
+        },
+        RefreshAccordion : function() {
+            $accordion.accordion('refresh');
         }
     };
 })();
@@ -83,140 +107,99 @@ var Map = (function() {
 
 // Web application View Model
 var SmartLightingViewModel = (function() {
-    var self = this;
+    //TODO Make the class and encapsulate functionality
+    function fetchDataFromService(web_service_address, data_type, placeToStoreData) {
+        if (web_service_address && data_type && placeToStoreData) {
+            $.getJSON(web_service_address, data_type, function(result) {
+                console.log(result);
+                if (result.status === 'success') {
+                    if (typeof placeToStoreData === "function" ) {
+                        placeToStoreData(result.response);
+                    if ( data_type.search('roads') !== -1 )
+SmartLightingViewModel.problemViewModel.road(result.response[0].name);
+                    }
+                    UI.RefreshAccordion();
+                } else if(result.status === 'error'){
+                    return;//TODO throw an error
+                }
+            });
+        }
+    }
+
+    //View Models
+    function BulbsViewModel() {
+        var self = this;
+        self.bulbs = ko.observableArray([]);
+        self.getBulbs = function() {
+            var web_service = 'http://student.agh.edu.pl/~olekn/data.php?callback=?';
+            var data_type = 'data_type=bulbs'
+            fetchDataFromService(web_service, data_type, self.bulbs);//Fetch data and write to the array
+        };
+        self.getBulbs();//Fetch bulbs from the server
+    }
+    function LanternsViewModel() {
+        var self = this;
+        self.lanterns = ko.observableArray([]);
+        self.getLanterns = function() {
+            var web_service = 'http://student.agh.edu.pl/~olekn/data.php?callback=?';
+            var data_type = 'data_type=lanterns'
+            fetchDataFromService(web_service, data_type, self.lanterns);//Fetch data and write to the array
+        };
+        self.getLanterns();//Fetch lanterns from the server
+    }
+    function RoadsViewModel() {
+        var self = this;
+        self.roads = ko.observableArray([]);
+        self.getRoads = function() {
+            //Get roads from the server
+            self.roads.push(new Road({"name":"Wybickiego","width":4,"coords":[{"x":50.060975,"y":19.90101}]})); //mock
+            var web_service = 'http://student.agh.edu.pl/~olekn/data.php?callback=?';
+            var data_type = 'data_type=roads'
+            fetchDataFromService(web_service, data_type, self.roads);//Fetch data and write to the array
+        };
+        self.getRoads();//Fetch roads from the server
+    }
+    function ProblemViewModel() {
+        var self = this;
+        self.road = ko.observable(null);
+        self.bulbs = ko.observableArray([]);
+        self.lanterns = ko.observableArray([]);
+    }
+
+    // Models
+    function Bulb(bulb) {
+        var self = this;
+        self.name = bulb.name;
+        self.luminance = bulb.luminance;
+        self.power_consumption = bulb.power_consumption;
+        self.lifetime = bulb.lifetime;
+        self.cost = bulb.cost;
+    }
+    function Lantern(lantern) {
+        var self = this;
+        self.name = lantern.name;
+        self.height = lantern.height;
+        self.cost = lantern.cost;
+        self.lifetime = lantern.lifetime;
+    }
+    function Road(road) {
+        var self = this;
+        self.name = road.name;
+        self.height = road.height;
+        self.coords = road.coords;
+    }
 
     //public
     return {
-        multiSelectInitOptions : {
-            includeSelectAllOption: true,
-            enableFiltering:true
-        },
+        problemViewModel    : new ProblemViewModel(),
         bulbsViewModel      : new BulbsViewModel(),
         lanternsViewModel   : new LanternsViewModel(),
         roadsViewModel      : new RoadsViewModel(),
-        choosenRoads        : ko.observableArray(),
-        problemViewModel    : new ProblemViewModel(),
 
         calculate : function() {
             var problemVM = SmartLightingViewModel.problemViewModel;
-            console.log(problemVM.choosenBulbs(), problemVM.choosenLanterns(), SmartLightingViewModel.choosenRoads());
+            console.log(problemVM.bulbs(), problemVM.lanterns(), problemVM.road());
         }
     };
 })();
 // End Web application View Model
-
-//View Models
-function BulbsViewModel() {
-    var self = this;
-    var bulbsWebService = 'http://student.agh.edu.pl/~olekn/data.php?data_type=bulbs&callback=?';
-    self.bulbs = ko.observableArray([]);
-    self.getBulbs = function() {
-        //Get bulbs from the server
-//         $.getJSON(bulbsWebService, function(data){
-//             if (data) {
-//                 var bulbs = JSON.parse(data)
-//                 self.bulbs(bulbs);
-//             }
-//         });
-        //jQuery.support.cors = true;//To enable cross-domain ajax requests
-        $.ajax({
-            type: 'GET',
-            url: bulbsWebService,
-            dataType: 'jsonp',
-            success: function(json) {
-                console.log(json);
-                if (data) {
-                    var bulbs = JSON.parse(data);
-                    self.bulbs(bulbs);
-                }
-            },
-            error: function() {
-                self.bulbs.push(new Bulb(
-                    {
-                        "name":"SpeedStar BGP323 GRN156-2S\/740 I DM FG AL SI",
-                        "luminance":"13621",
-                        "power_consumption":"137",
-                        "lifetime":"100000",
-                        "cost":"3899"
-                    }
-                )); //mock
-            }
-        });
-        $.getJSON(bulbsWebService, function(data){
-            console.log(data);
-        });
-        $.ajax({
-            url: bulbsWebService,
-            dataType: 'jsonp', // Notice! JSONP <-- P (lowercase)
-        error: function(error) {
-            console.log();
-        },
-            complete: function(xhr, status) {
-                console.log(xhr);
-                console.log(xhr.getAllResponseHeaders());
-                if (status === 'error' || !xhr.responseText) {
-                    console.log('getBilbsError');
-                }
-                else {
-                    var data = xhr.responseText;
-                    console.log(data);
-                }
-            }
-        });
-    };
-    self.getBulbs();//Fetch bulbs from the server
-}
-function LanternsViewModel() {
-    var self = this;
-    self.lanterns = ko.observableArray([]);
-    self.getLanterns = function() {
-        //Get lanterns from the server
-        self.lanterns.push(new Lantern({"name":"S\u201360 SRsP","height":"6","cost":"685","lifetime":"30"})); //mock
-        self.lanterns.push(new Lantern({"name":"S\u201370 SRsP","height":"7","cost":"710","lifetime":"30"})); //mock
-    };
-    self.getLanterns();//Fetch lanterns from the server
-}
-function RoadsViewModel() {
-    var self = this;
-    self.roads = ko.observableArray([]);
-    self.roadsNames = ko.computed(function() {
-        return ko.utils.arrayMap(self.roads(), function(road) {
-            return road.name;
-        });
-    });
-    self.choosenRoads = ko.observableArray([]);
-    self.getRoads = function() {
-        //Get roads from the server
-        self.roads.push(new Road({"name":"Wybickiego","width":4,"coords":[{"x":50.060975,"y":19.90101}]})); //mock
-    };
-    self.getRoads();//Fetch roads from the server
-}
-function ProblemViewModel() {
-    var self = this;
-    self.choosenBulbs = ko.observableArray([]);
-    self.choosenLanterns = ko.observableArray([]);
-    self.choosenRoads = ko.observableArray([]);
-}
-
-// Models
-function Bulb(bulb) {
-    var self = this;
-    self.name = bulb.name;
-    self.luminance = bulb.luminance;
-    self.power_consumption = bulb.power_consumption;
-    self.lifetime = bulb.lifetime;
-    self.cost = bulb.cost;
-}
-function Lantern(lantern) {
-    var self = this;
-    self.name = lantern.name;
-    self.height = lantern.height;
-    self.cost = lantern.cost;
-    self.lifetime = lantern.lifetime;
-}
-function Road(road) {
-    var self = this;
-    self.name = road.name;
-    self.height = road.height;
-    self.coords = road.coords;
-}
