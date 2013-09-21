@@ -1,5 +1,14 @@
 <?php
 
+// $fname = $_GET['firstname'];
+//      if($fname=='Jeff')
+//      {
+//          //header("Content-Type: application/json");
+//         echo $_GET['callback'] . '(' . "{'fullname' : 'Jeff Hansen'}" . ')';
+//
+//      }
+//die;
+
 require_once 'DataManager.php';
 
 error_reporting(E_ALL);

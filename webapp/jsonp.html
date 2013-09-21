@@ -3,31 +3,40 @@
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="js/jquery.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
+
+                $.getJSON('http://student.agh.edu.pl/~olekn/data.php?callback=?', 'data_type=lanterns', function(result) {
+                    console.log(result);
+                    if(result.status === 'success'){
+                    alert('First lantern name is ' + result.response[0].name);
+                    } else if(result.status === 'error'){
+                        /* handle error here */
+                    }
+                });
 
 //                $.get("../data.php?data_type=bulbs", function(data) {
 //                    $("body").html(data);
 //                    alert("Load was performed.");
 //                });
 
-                $.ajax({
-                    url: "../data.php?data_type=bulbs",
-                    dataType: 'get', // Notice! JSONP <-- P (lowercase)
-                    complete: function(xhr, status) {
-                        if (status === 'error' || !xhr.responseText) {
-                            handleError();
-                        }
-                        else {
-                            var data = xhr.responseText;
-                            var json = JSON.parse(data);
-                            console.log(json);
-                            $("body").html(data);
-                            //...
-                        }
-                    }
-                });
+//                $.ajax({
+//                    url: "../data.php?data_type=bulbs",
+//                    dataType: 'get', // Notice! JSONP <-- P (lowercase)
+//                    complete: function(xhr, status) {
+//                        if (status === 'error' || !xhr.responseText) {
+//                            handleError();
+//                        }
+//                        else {
+//                            var data = xhr.responseText;
+//                            var json = JSON.parse(data);
+//                            console.log(json);
+//                            $("body").html(data);
+//                            //...
+//                        }
+//                    }
+//                });
             });
         </script>
     </head>

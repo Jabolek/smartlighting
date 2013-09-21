@@ -268,7 +268,24 @@ class LanternPositionsCalculator {
 
     public static function displayErrorMessage($msg) {
 
-        echo "ERROR: {$msg}";
+        header('Content-type: application/json; charset=utf8', true);
+        
+        $response = array(
+            'status' => 'error',
+            'response' => array(
+                'message' => $msg,
+            ),
+        );
+        
+        $json = json_encode($response);
+        
+        if(isset($_GET['callback'])){
+            
+             echo $_GET['callback'] . '(' . $json . ')';
+            
+        } else {
+            echo $json;
+        }
         die;
     }
 
@@ -279,8 +296,22 @@ class LanternPositionsCalculator {
 
     public static function displayJsonResponse($data) {
 
-        header('Content-type: application/json');
-        echo json_encode($data);
+        header('Content-type: application/json; charset=utf8', true);
+        
+        $response = array(
+            'status' => 'success',
+            'response' => $data,
+        );
+        
+        $json = json_encode($response);
+        
+        if(isset($_GET['callback'])){
+            
+             echo $_GET['callback'] . '(' . $json . ')';
+            
+        } else {
+            echo $json;
+        }
     }
 
     public static function displayTsvResponse($points) {

@@ -10,7 +10,45 @@ class DataManager {
 
         header('Content-type: application/json; charset=utf8', true);
         
-        echo json_encode($data);
+        $response = array(
+            'status' => 'success',
+            'response' => $data,
+        );
+        
+        $json = json_encode($response);
+        
+        if(isset($_GET['callback'])){
+            
+             echo $_GET['callback'] . '(' . $json . ')';
+            
+        } else {
+            echo $json;
+        }
+        
+        
+    }
+    
+    public static function displayErrorMessage($msg) {
+
+        header('Content-type: application/json; charset=utf8', true);
+        
+        $response = array(
+            'status' => 'error',
+            'response' => array(
+                'message' => $msg,
+            ),
+        );
+        
+        $json = json_encode($response);
+        
+        if(isset($_GET['callback'])){
+            
+             echo $_GET['callback'] . '(' . $json . ')';
+            
+        } else {
+            echo $json;
+        }
+        die;
     }
 
     function getBulbs() {
