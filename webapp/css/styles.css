@@ -6,14 +6,62 @@ body {
 .content .title {
     margin-bottom: 1em;
 }
+/*.jumbotron {
+    position: relative;
+}*/
 /* End General */
 /* Nav */
 .navbar-header {
     text-transform: capitalize;
 }
+.#nav li.hidden {
+    display: none;
+}
 /* End Nav */
+/* Page */
+.page {
+    display: none;
+/*    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 48px 60px;*/
+}
+.page.active {
+/*     display: block; */
+}
+/* End Page */
+/* Page Home */
+.page#home {
+    overflow: hidden;
+}
+.page#home h2 {
+    margin-top: 0;
+    padding-bottom: 0.5em;
+}
+.page#home h3 {
+    display: inline-block;
+    float: left;
+    clear: both;
+    width: 7.5em;
+    margin-top: 17px;
+    font-weight: bold;
+    color: #888888;
+}
+.page#home .row {
+    margin: 20px 0 10px 0;
+}
+.page#home button.dropdown-toggle {
+     width: 20em;
+}
+.page#home button.btn-lg {
+    margin-top: 1.5em;
+}
+.page#home .btn-group {
+    vertical-align: bottom;
+}
+/* End Page Home */
 /* Map */
-.map {
+.page.map {
     width: 100%;
     max-width: 800px;
     margin: 1em auto;
