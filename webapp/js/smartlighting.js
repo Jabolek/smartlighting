@@ -54,7 +54,12 @@ var UI = (function(){
     }
     // End Menu
     function initializeAccordion() {
+        var icons = {
+            header: "ui-icon-circle-arrow-e",
+            activeHeader: "ui-icon-circle-arrow-s"
+        };
         $accordion.accordion({
+            icons: icons,
             heightStyle: "fill",
             collapsible: true
         });

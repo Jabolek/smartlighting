@@ -43,6 +43,9 @@ body {
     font-weight: bold;
     color: #888888;
 }
+.page#home h3.ui-state-active {
+    color: #000;
+}
 .page#home button.btn-lg {
     margin-top: 1.5em;
     padding: 6px 12px;
@@ -52,8 +55,13 @@ body {
 }
 /* Accordion */
 .ui-accordion-content {
-    padding: 0 0 0 2em;
+    padding: 0.1em 0.1em 0.1em 2em;
 }
+.ui-icon { background-image: url('icons/ui-icons_888888_256x240.png')/*{iconsDefault}*/; }
+.ui-accordion-header-active .ui-icon { background-image: url('icons/ui-icons_222222_256x240.png')/*{iconsHover}*/; }
+.ui-icon-circle-arrow-e { background-position: -112px -192px; }
+.ui-icon-circle-arrow-s { background-position: -128px -192px; }
+
 .page#home #accordion_container {
     width: 50%;
     min-width: 500px;
@@ -62,6 +70,12 @@ body {
 .page#home .accordion div {
     overflow: auto !important;
     overflow-x: hidden !important;
+}
+.page#home .accordion h3 span {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin: 0 0.25em 0 0;
 }
 .page#home .accordion .dropdown-menu {
     display: block;

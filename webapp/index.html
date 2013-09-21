@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="./css/jquery.ui.accordion.css" rel="stylesheet" media="screen">
+    <link href="./css/jquery.ui.all.css" rel="stylesheet" media="screen">
     <link href="./css/styles.css" rel="stylesheet" type="text/css" media="screen" />
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -35,7 +35,7 @@
             <form action="">
             <div id="accordion_container" class="ui-widget-content">
                 <div id="accordion" class="accordion">
-                    <h3 title="Kliknij, aby rozwinąć/zwinąć">1 Drogi</h3>
+                    <h3 title="Kliknij, aby rozwinąć/zwinąć">Drogi</h3>
                     <div class="list">
                         <ul class="dropdown-menu" data-bind="foreach: roadsViewModel.roads">
                             <li>
@@ -71,8 +71,8 @@ checked: $root.problemViewModel.lanterns">
                             <li>
                                 <a href="javascript:void(0);">
                                     <label class="checkbox">
-                                        <input type="checkbox" data-bind="value: name,
-checked: $root.problemViewModel.bulbs">
+                                        <input type="checkbox" data-bind="value: name, checked:
+$root.problemViewModel.bulbs">
                                             <span data-bind="text: name"></span>
                                         </input>
                                     </label>
