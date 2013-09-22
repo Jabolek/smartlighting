@@ -33,16 +33,21 @@ var UI = (function(){
         Messages.$dataError = $('#data_error');
     }
     // Menu
+    function hideNavMapAndSummary() {
+        $navMap.hide();
+        $navSummary.hide();
+    }
     function handleMenuClicks() {
         for ( var i = 0; i < $navItems.length; i++) {
                 (function(i) {
                 $($navItems[i]).click(function() {
+                    var targetPageName = 'home';
                     try {
                         $navItems.removeClass('active');
                         var targetHref = $($navItems[i]).addClass('active').find('a')[0].href;
-                        var targetPageName = targetHref.substring(targetHref.indexOf('#') + 1);
+                        targetPageName = targetHref.substring(targetHref.indexOf('#') + 1);
                     }
-                    catch(e) {}
+                    catch(e) { }
                     navigateToPage(targetPageName);
                 });
              }(i));
@@ -52,6 +57,10 @@ var UI = (function(){
             $navHome.addClass('active');
             navigateToPage('home');
         });
+    }
+    function showMapAndSummary() {
+        $navMap.fadeIn(2 * _fadeInTime);
+        $navSummary.fadeIn(2 * _fadeInTime);
     }
     function navigateToPage(id) {
         if (id) {
@@ -88,28 +97,57 @@ var UI = (function(){
     //Messages
     function handleMessagesEvents() {
         Messages.$dataError.find('.btn.ok').click(function(e) {
-            $shadow.fadeOut(_fadeOutTime);
+            deactivateShadow();
             Messages.$dataError.fadeOut(_fadeOutTime);
         });
     }
-
+    function turnOnLoading() {
+        $shadow.addClass('loading');
+    }
+    function turnOffLoading() {
+        $shadow.removeClass('loading');
+    }
+    function activateShadow() {
+        $shadow.fadeIn(_fadeInTime);
+    }
+    function deactivateShadow() {
+        $shadow.fadeOut(_fadeOutTime);
+    }
+    
     return {
-        Init : function() {
+        Init: function() {
             initVariables();
+            hideNavMapAndSummary();
             handleMenuClicks();
             initializeAccordion();
             handleCheckboxSelection();
             handleMessagesEvents();
             navigateToPage('home');
         },
-        RefreshAccordion : function() {
+        NavigateToPage: function(page) {
+            if (page) {
+                navigateToPage(page);
+            }
+        },
+        RefreshAccordion: function() {
             $accordion.accordion('refresh');
         },
-        Messages : {
+        Messages: {
             ShowDataError : function() {
-                $shadow.fadeIn(_fadeInTime);
+                activateShadow();
                 Messages.$dataError.fadeIn(_fadeInTime);
             }
+        },
+        TurnOnLoading: function() {
+            turnOnLoading();
+            activateShadow();
+        },
+        TurnOffLoading: function() {
+            turnOffLoading();
+            deactivateShadow();
+        },
+        ShowAllMenuItems: function() {
+            showMapAndSummary();
         }
     };
 })();
@@ -127,7 +165,7 @@ var Map = (function() {
 
     //public
     return {
-        Init : function() {
+        Init: function() {
             console.log('Init map');
             _map = new google.maps.Map(document.getElementById("map"), _options);
         }
@@ -137,7 +175,6 @@ var Map = (function() {
 
 // Web application View Model
 var SmartLightingViewModel = (function() {
-    //TODO Make the class and encapsulate functionality
     function fetchDataFromService(web_service_address, data_type, placeToStoreData) {
         if (web_service_address && data_type && placeToStoreData) {
             $.getJSON(web_service_address, data_type, function(result) {
@@ -155,6 +192,15 @@ SmartLightingViewModel.problemViewModel.road(result.response[0].name);
             });
         }
     }
+    function sendDataToService(web_service, address, data_type, data) {
+        setTimeout(function() {
+            var problemVM = SmartLightingViewModel.problemViewModel;
+            console.log(SmartLightingViewModel.problemViewModel.bulbs(), problemVM.lanterns(), problemVM.road());
+            UI.TurnOffLoading();
+            UI.ShowAllMenuItems();
+            UI.NavigateToPage('map');
+        }, 2000);
+    }
 
     //View Models
     function BulbsViewModel() {
@@ -162,7 +208,7 @@ SmartLightingViewModel.problemViewModel.road(result.response[0].name);
         self.bulbs = ko.observableArray([]);
         self.getBulbs = function() {
             var web_service = 'http://student.agh.edu.pl/~olekn/data.php?callback=?';
-            var data_type = 'data_type=bulbs'
+            var data_type = 'data_type=bulbs';
             fetchDataFromService(web_service, data_type, self.bulbs);//Fetch data and write to the array
         };
         self.getBulbs();//Fetch bulbs from the server
@@ -172,7 +218,7 @@ SmartLightingViewModel.problemViewModel.road(result.response[0].name);
         self.lanterns = ko.observableArray([]);
         self.getLanterns = function() {
             var web_service = 'http://student.agh.edu.pl/~olekn/data.php?callback=?';
-            var data_type = 'data_type=lanterns'
+            var data_type = 'data_type=lanterns';
             fetchDataFromService(web_service, data_type, self.lanterns);//Fetch data and write to the array
         };
         self.getLanterns();//Fetch lanterns from the server
@@ -184,7 +230,7 @@ SmartLightingViewModel.problemViewModel.road(result.response[0].name);
             //Get roads from the server
             self.roads.push(new Road({"name":"Wybickiego","width":4,"coords":[{"x":50.060975,"y":19.90101}]})); //mock
             var web_service = 'http://student.agh.edu.pl/~olekn/data.php?callback=?';
-            var data_type = 'data_type=roads'
+            var data_type = 'data_type=roads';
             fetchDataFromService(web_service, data_type, self.roads);//Fetch data and write to the array
         };
         self.getRoads();//Fetch roads from the server
@@ -232,7 +278,8 @@ SmartLightingViewModel.problemViewModel.road(result.response[0].name);
                 UI.Messages.ShowDataError();
             }
             else {
-                console.log(problemVM.bulbs(), problemVM.lanterns(), problemVM.road());
+                UI.TurnOnLoading();
+                sendDataToService();
             }
         }
     };

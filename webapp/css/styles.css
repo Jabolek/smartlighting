@@ -24,9 +24,6 @@ body {
 .navbar-header {
     text-transform: capitalize;
 }
-.#nav li.hidden {
-    display: none;
-}
 /* End Nav */
 /* Page */
 .page {
